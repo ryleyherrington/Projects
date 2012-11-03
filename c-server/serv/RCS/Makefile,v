@@ -1,0 +1,43 @@
+head	1.1;
+access;
+symbols;
+locks
+	ryleyherrington:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2012.03.13.04.27.12;	author ryleyherrington;	state Exp;
+branches;
+next	;
+
+
+desc
+@@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@
+CPP=g++
+CC=gcc
+
+#CCOPTS=-g
+CCOPTS=
+
+all: compute
+
+compute: compute.c
+	$(CPP) $(CCOPTS) -o $@@ $@@.c -lpthread
+
+clean:
+	rm -f core a.out compute *.o *.s 
+
+archive:
+	tar cvf - compute.c Makefile | gzip > socket_example.tgz
+
+
+@

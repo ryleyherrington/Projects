@@ -1,0 +1,59 @@
+head	1.1;
+access;
+symbols;
+locks
+	ryleyherrington:1.1; strict;
+comment	@# @;
+
+
+1.1
+date	2012.03.16.06.47.50;	author ryleyherrington;	state Exp;
+branches;
+next	;
+
+
+desc
+@Possible final version
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@
+CPP=g++
+CC=gcc
+
+CCOPTS=-g
+#CCOPTS=-O3
+
+all: compute
+
+compute: compute.c
+	$(CPP) $(CCOPTS) -o $@@ $@@.c -lpthread
+
+test: compute
+	chmod +x manage.py report.py
+	manage.py &
+	sleep 3
+	compute   &
+	sleep 15
+	report.py -N
+	report.py -R
+	report.py -C
+	sleep 10
+	report.py -N
+	report.py -K
+
+clean:
+	rm -f core a.out compute *.o *.s tags
+	rm -rf *.dSYM
+
+socket.tgz::
+	tar cvf - manage.py report.py compute.c Makefile | gzip > socket.tgz
+
+archive: socket.tgz
+
+@
