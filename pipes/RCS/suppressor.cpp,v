@@ -1,0 +1,86 @@
+head	1.2;
+access;
+symbols;
+locks
+	ryleyherrington:1.2; strict;
+comment	@// @;
+
+
+1.2
+date	2012.02.07.04.56.52;	author ryleyherrington;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2012.02.03.05.25.55;	author ryleyherrington;	state Exp;
+branches;
+next	;
+
+
+desc
+@initial version with debugging.
+@
+
+
+1.2
+log
+@Commented out debug statements
+@
+text
+@
+/*
+ *  Just an "echo" program to trace the birth, life, and death of a child process
+ */
+
+#include <stdio.h>
+#include <string.h>
+
+#define LINESIZE  1024
+
+int main(int argc, char* argv[]) {
+
+    //fprintf(stderr, "Entering suppressor ...\n");  
+
+    char linebuffer1[LINESIZE], linebuffer2[LINESIZE];
+    linebuffer2[0] = '\n';
+    linebuffer2[1] = '\0';
+
+    /* 2 buffers to compare if same word */
+    char *lastbuff = linebuffer2;
+    char *currbuff = linebuffer1;
+    while (fgets(currbuff, LINESIZE, stdin) != 0) {
+
+        //fprintf(stderr, "Suppressor read: %s", currbuff);  
+
+        /*compares the strings in the two buffers*/
+        if (strncmp(currbuff, lastbuff, LINESIZE) != 0) {
+            fprintf(stdout, "%s", currbuff);
+        }
+
+        // swaps buffers
+        char *temp = lastbuff;
+        lastbuff = currbuff;
+        currbuff = temp;
+    }
+
+    //fprintf(stderr, "Exiting suppressor ...\n");  
+    return 0;
+}
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d13 1
+a13 1
+    fprintf(stderr, "Entering suppressor ...\n");  
+d24 1
+a24 1
+        fprintf(stderr, "Suppressor read: %s", currbuff);  
+d37 1
+a37 1
+    fprintf(stderr, "Exiting suppressor ...\n");  
+@

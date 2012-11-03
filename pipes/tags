@@ -1,0 +1,9 @@
+Msuppressor.cpp	suppressor.cpp	/^int main(int argc, char* argv[]) {$/
+checked_close	uniqify.cpp	/^static void checked_close(int fd)          { if (c/
+checked_dup2	uniqify.cpp	/^static void checked_dup2(int fd1, int fd2) { if (d/
+checked_fclose	uniqify.cpp	/^static void checked_fclose(FILE* stream)   { if (f/
+checked_pipe	uniqify.cpp	/^static void checked_pipe(int fd[2])        { if (p/
+distribute_words	uniqify.cpp	/^static void distribute_words(FILE* input_file, vec/
+downcase_str	uniqify.cpp	/^static char* downcase_str(char* word) {$/
+get_word	uniqify.cpp	/^static int get_word(FILE*f, char*word) {$/
+merge_words	uniqify.cpp	/^static void merge_words(FILE* output_file, vector</

@@ -1,0 +1,2 @@
+provide timings based on
+Please provide timings based on the size of the input file. Ensure that you test it with multiple types and sizes of files, including word lists and free

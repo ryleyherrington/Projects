@@ -1,0 +1,250 @@
+/*
+* Original Author: Ryley Herrington
+* File: uniqify.cpp
+* Created: 2012 January 28, by herringr 
+* Last Modified: 2012 January 31, 21:25 by herringr
+* 
+* This file contains functions to read a file, 
+* output the uniqe words in that file,
+* and sort those words in alphabetical order
+*
+* For future reference this can be done in one line:
+* tr ' ' '\n' < test.txt | sed '/^$/d' | sort -u
+*/
+
+#include <iostream>
+#include <cstring>
+#include <unistd.h>
+#include <stdio.h>
+#include <ctype.h>
+
+using namespace std;
+
+#define LINESIZE 1024
+
+/* This could have been done with: #define READ_END 0*/
+/* These are going to be for our pipes */
+static const int READ_END=0;
+static const int WRITE_END=1;
+
+typedef struct {
+    int parent_write[2]; /*parent will write to this fd*/
+    int parent_read[2];  /*parent will read from this fd*/
+} connection_t;
+
+/*
+ *This method will write from the child to the parent
+ */
+void write_words(FILE * input_file, FILE** streams, int count) {
+
+    /* Set up string of delimiters */
+    char delimiters[256], *dp = delimiters;
+    for (int i=1; i<256; i++) { /*runs through all ascii characters*/
+        if (isprint(i) && !isalpha(i))/*if printable and not alphabet*/
+            *dp++ = i; /*add to the delimeter array*/
+    }
+    *dp = '\0'; /*end of array*/
+
+    /*printf("delimiters[] = \"%s\"\n", delimiters); //testing line */
+    char buff[LINESIZE], *p;
+    char *token; /*will stand for each word*/
+    int curr_file = 0;
+    while (fgets(buff, sizeof(buff), input_file) != NULL) {
+        p = buff;
+        while((token = strsep(&p, delimiters))!= NULL) {
+            for (int i=0; token[i] != '\0'; i++){
+                token[i] = tolower(token[i]);
+            }
+            fprintf(streams[curr_file], "%s\n", token); 
+            curr_file = (curr_file + 1) % count;
+        }
+    }
+
+    for (int c=0; c<count; c++) {
+        fclose(streams[c]);
+    }
+    fclose(input_file);
+}
+
+#define MAX_TOKEN_LENGTH 200
+
+/*
+ * Read new token from stream into provided buffer
+ * Returns:
+ *   1 for success  
+ *   0 for end of file
+ */
+int get_token(FILE*f, char*token) {
+    if (fgets(token, MAX_TOKEN_LENGTH-1, f) != NULL) {
+        fclose(f);
+        free(token);
+        return 0;
+    }
+    return 1;
+}
+
+/*
+ *  Read lines from the child's output pipe and eliminate duplicates
+ */
+void merge_words(FILE* output_file, FILE**input_streams, int count) {
+
+    char** tokens = (char**)malloc(count * sizeof(char*));
+    if (tokens == NULL)
+        perror("malloc failure"), exit(-1);
+    for (int i=0; i<count; i++) {
+        tokens[i] = (char*)malloc(MAX_TOKEN_LENGTH);
+        if (tokens[i] == NULL)
+            perror("malloc failure"), exit(-1);
+        if (get_token(input_streams[i], tokens[i]) == 0) {
+            tokens[i] = NULL;
+        }
+    }
+    int done = 0;
+    while (!done) {
+
+        /*
+         * Find the first non-NULL token 
+         * This will be compared to all others to find the smallest
+         * If there are no non-NULL tokens, then all files are empty, and we're done
+         */
+        done = 1;           // assume all files are empty
+        int smallest = -1;  // assume there is no valid token
+        for (int i=0; i<count; i++) {
+            if (tokens[i] != NULL) {
+                done = 0;
+                smallest = i;
+                break;
+            }
+        }
+        // If no token found, we're done, so return
+        if (smallest == -1)
+            return;
+
+        // Compare rest of tokens to find smallest of current set
+        for (int i=smallest+1; i<count; i++) {
+            if (tokens[i] != NULL) {
+                if (strcmp(tokens[smallest], tokens[i]) < 0) {
+                    smallest = i;
+                }
+            }
+        }
+
+        // Write out the smallest token, and re-fill from its stream
+        fprintf(output_file, "%s", tokens[smallest]);
+        if (get_token(input_streams[smallest], tokens[smallest]) == 0) {
+            tokens[smallest] = NULL;
+        }
+        
+    }
+}
+
+// This stuff goes into the supressor
+#if 0
+    char linebuffer1[LINESIZE], linebuffer2[LINESIZE];
+    linebuffer2[0] = '\n';
+    linebuffer2[1] = '\0';
+    
+    /*2 buffers to compare if same word */
+    char *lastbuff = linebuffer2;
+    char *currbuff = linebuffer1;
+    while (fgets(currbuff, LINESIZE, f) != 0) {
+        /*compares the strings in the two buffers*/
+        if (strncmp(currbuff, lastbuff, LINESIZE) != 0) {
+            fprintf(stdout, "%s", currbuff);
+        }
+
+        // swaps buffers
+        char *temp = lastbuff;
+        lastbuff = currbuff;
+        currbuff = temp;
+    }
+#endif
+
+int main(int argc, char *argv[]) {
+
+    int sortCount = argc>1 ? atoi(argv[1]) : 1;
+    connection_t *conn = (connection_t*)malloc(sortCount * sizeof(connection_t));
+    if (conn == NULL)
+        perror("malloc failed making connections"), exit(-1);
+    
+    FILE *f = stdin;
+
+    for (int c=0; c<sortCount; c++) {
+    
+        if (pipe(conn[c].parent_write) < 0) /*<0 catches all types of errors*/
+            perror("pipe of parent write"), exit(-1);
+        if (pipe(conn[c].parent_read) < 0)
+            perror("pipe of parent read"), exit(-1);
+     
+        switch(fork()) {
+        
+        case -1:
+            perror("fork didn't work properly.");
+            exit(-1);
+    
+        case 0:
+            /*In child: read from parent write, write to parent read*/
+            if (close(conn[c].parent_write[WRITE_END]) < 0)    
+                perror("closing parent_write WE"), exit(-1);
+            if (close(conn[c].parent_read[READ_END]) < 0)
+                perror("closing parent_read RE"), exit(-1);
+            
+            if (dup2(conn[c].parent_read[WRITE_END], 1) < 0) /*closes previous fd 1*/
+                perror("dup2 of parent_read WE"), exit(-1);
+            if (dup2(conn[c].parent_write[READ_END], 0) < 0) /*closes previous fd 0*/
+                perror("dup2 of parent_write RE"), exit(-1);
+    
+            execl("/usr/bin/sort", "sort", (char *)NULL);
+            perror("/usr/bin/sort"); /* will never be called if exec works*/
+            exit(-1);/*also won't be called if exec works*/
+            
+        default: 
+            /*In parent: write to parent write, read from parent read*/
+            if (close(conn[c].parent_read[WRITE_END]) < 0)
+                perror("close of parent_read WE"), exit(-1);
+            if (close(conn[c].parent_write[READ_END]) < 0)
+                perror("close of parent_write RE"), exit(-1);
+        }
+    }
+
+    FILE**streams_to_write = (FILE**)malloc(sortCount * sizeof(FILE*));
+    if (streams_to_write == NULL)
+        perror("malloc failure creating streams to write"), exit(-1);
+    for (int c=0; c<sortCount; c++ )
+        streams_to_write[c] = fdopen(conn[c].parent_write[WRITE_END], "w"); /*open parent pipe WE*/
+    //write_lines(f,parent_write[WRITE_END]);/*writes child to parent*/
+    write_words(f, streams_to_write, sortCount);    /*writes words to child sort processes*/
+ /****************************************
+    Here you should create a single pipe to write to (no reading necessary)
+    fork()
+    in the child, dup the pipe onto stdin
+    exec the suppressor program
+   */
+
+    int pipe_to_write[2];
+    if (pipe(pipe_to_write) < 0)
+        perror("pipe to write "), exit(-1);
+    if(close(pipe_to_write[READ_END])<0)
+        perror("closing parent_write WE"), exit(-1);
+    while (stdin != NULL) 
+        
+    /*
+    The suppressor will be a small program which loops on stdin
+    and reads one word per line and suppresses duplicates
+    see code in the #if 0 above for hints
+    *****************************************
+    */
+
+
+
+    FILE**streams_to_read = (FILE**)malloc(sortCount * sizeof(FILE*));
+    if (streams_to_read == NULL)
+        perror("malloc failure creating streams to read"), exit(-1);
+    for (int c=0; c<sortCount; c++ ) 
+        streams_to_read[c] = fdopen(conn[c].parent_read[READ_END], "r"); /*open parent pipe RE*/
+    // read_lines(parent_read[READ_END]); /*reads what the kids writes*/
+    FILE* output_file = stdout;
+    merge_words(output_file, streams_to_read, sortCount); /*reads what the kids writes*/
+    
+    return 0;   
+}
