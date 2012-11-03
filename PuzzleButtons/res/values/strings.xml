@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="hello">Welcome to the Buttons game! Choose your game board size:</string>
+    <string name="win">You beat the game! Fantastic job, Winner! Sarcasm.</string>
+    <string name="directions">Choose a size of your game board (nxn matrix), 
+        then you toggle the buttons until they are all "on."
+        When you click a button, it will change all the adjacent buttons
+        as well. Good luck!  </string>
+    <string name="app_name">Puzzle Buttons</string>
+    <string name="start_button">Start!</string>
+    <string name="button_prompt">Choose a game board size:</string>
+    <string name="theme_prompt">Choose a game theme:</string>
+    <string name="blog">Suggestions? http://puzzlebuttons.blogspot.com</string>
+	<string name="back">Back to Home screen</string>
+    <string-array name="theme_array">
+        <item>Blazers</item>
+        <item>Ducks</item>
+        <item>Beavers</item>
+        <item>Girl</item>
+        <item>Boy</item>
+    </string-array>
+    
+    <string-array name="size_array">
+        <item>3</item>
+        <item>4</item>
+        <item>5</item>
+    </string-array>
+
+</resources>

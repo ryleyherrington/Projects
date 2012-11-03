@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    android:background="@drawable/background2"
+>
+
+    <TextView
+        android:id="@+id/hey"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="@string/hello" />
+
+    <Spinner
+        android:id="@+id/spinnernum"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/button_prompt" />
+   
+     <Spinner
+        android:id="@+id/spinnertheme"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:prompt="@string/theme_prompt" />
+ 
+
+    <Button
+        android:id="@+id/dir_Button"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:text="Directions" />
+
+    <TextView
+        android:id="@+id/blog"
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:layout_gravity="bottom"
+        android:text="@string/blog" />
+
+</LinearLayout>
