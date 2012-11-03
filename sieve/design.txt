@@ -1,0 +1,77 @@
+There are three approaches to this problem as far as I can
+tell:
+
+1. Byte maps --  Generating a final bit map as a seperate
+step (atomic writes to bytes)
+		 This is where the ith byte represents the
+		 ith number.  This has the advantage that it
+		 won't need a mutex lock, they all write
+		    the same values (1's only) so it would
+		    be okay if we lost one while two threads
+		    are setting the same ith byte.
+
+2. Bit maps --  Bit i represents number i. The bit can be
+located by byte i / 8, then at
+		bit position i%8. This requires a read,
+		modify, write operation which requires a
+		mutex on the data. If you read read, modify
+		modify, you'll lose one of the writes
+		because it's non atomic. Mutexes slow down
+		threads/ and memory cycles.
+
+3. Segregated sections controlled by each thread -- each
+thread would control a certain
+	      section of memory which would not be
+	      overwritten by other threads; giving us the
+	      value that only one thread would ever need to
+	      write to a certain part of memory.
+
+4. Segregated by each thread has it's own memory -- each
+thread would have it's own section of
+	      memory and it would write it's own bit/byte
+	      mask for the values it was given to compute.
+	      When it was all done, all that's left is to
+	      logically OR them all together and then we'd
+	      have the final answer.
+
+Methods of Finding primes
+
+In a bit map, just turn all of the bits to 0, then when you
+find a prime change that bit in the map, and change all of
+it's multiples to be 1.
+
+The biggest aspect we can take care of is that when we check
+if a number is prime or not, we could cut down the list in
+half. For example, let's say we have the numbers 0 - 99, we
+would check if the number 2 is prime. Since it is, we would
+set 2, 2*2, 2*2*2, 2*2*2*2, and so forth to be set as
+"non-prime." Therfore, at 50 we wouldn't have to even
+traverse the list anymore because our value would be 50, and
+then 50*2 which is out of our initial list of values.
+
+To cut this list down even more though, we would've hit
+every single number after the initial square of our total
+number was hit. Let's go back to our example of 0-99, when
+we hit the number fourteen that number has already been
+added because it's the same as a multiple of 7;
+ therefore any number that 14 would be a factor would also
+ have the factor of seven, so the bit would've
+already been set. So we would only need to check 2-9 for our
+list.
+
+Instead of taking each i and incrementing it by 1 each time,
+we could increment by 2i instead.  The reason for this is
+because if you already have 3 as a prime, we would then go
+through and every third bit we would set it to be
+"non-prime," but every other number we would set is going to
+be an even number. Example: 3, 6, 9, 12, 15, 18... so
+instead we go up by 2i: 3, 9, 15...  This just takes us down
+by some.
+
+We might as well take our total numbers down by two at the
+very beginning because we know that no even number will ever
+be a prime. Because we never even hit those values to begin
+with (or we do, but our first prime number takes them out),
+getting rid of them would be faster.  Therefore, each bit
+represents the value (i+1)/2.
+

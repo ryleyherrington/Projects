@@ -1,0 +1,220 @@
+head	1.6;
+access;
+symbols;
+locks
+	ryleyherrington:1.6; strict;
+comment	@# @;
+
+
+1.6
+date	2012.02.21.05.28.45;	author ryleyherrington;	state Exp;
+branches;
+next	1.5;
+
+1.5
+date	2012.02.21.01.33.57;	author ryleyherrington;	state Exp;
+branches;
+next	1.4;
+
+1.4
+date	2012.02.12.08.27.08;	author ryleyherrington;	state Exp;
+branches;
+next	1.3;
+
+1.3
+date	2012.02.12.05.05.32;	author ryleyherrington;	state Exp;
+branches;
+next	1.2;
+
+1.2
+date	2012.02.12.04.19.38;	author ryleyherrington;	state Exp;
+branches;
+next	1.1;
+
+1.1
+date	2012.02.12.04.13.02;	author ryleyherrington;	state Exp;
+branches;
+next	;
+
+
+desc
+@Initial .
+@
+
+
+1.6
+log
+@cache variable, working with everything.
+@
+text
+@CCOPTS=-g
+CC=g++
+CACHE=50000000
+
+sieve: sieve.c
+	$(CC)   $(CCOPTS) -o $@@ $@@.c -lpthread
+
+opt:
+	@@rm -f sieve
+	make CCOPTS="-O3 -DNDEBUG" sieve
+
+test:	opt
+	sieve 4 4294967295 $(CACHE) noprint
+	sieve 2 4294967295 $(CACHE) noprint
+	sieve 1 4294967295 $(CACHE) noprint
+
+clean:
+	rm -f a.out sieve core *.o *.s sieve.tgz
+
+tags:
+	ctags sieve.c
+
+archive:
+	tar cvf - sieve.c Makefile primes-to-64K.txt | gzip > sieve.tgz
+
+@
+
+
+1.5
+log
+@current working version
+@
+text
+@d1 3
+a3 45
+#########################################################
+#Original Author: Ryley Herrington and D. Kevin McGrath #
+#Made
+#File: Makefile						#
+#Last Modified: January 31, 2012, 9:00pm, herringr	# 
+#							#
+#This is the makefile associated with Project 2		#
+#########################################################
+
+
+TARGET=template
+HTML=main_html
+
+# CC_OPTIONS=-Wall -std=c99
+# CC=cc
+
+# CC_OPTIONS=-O
+CC_OPTIONS=-g 
+CC=g++ -pthread
+
+default: sieve 
+
+both: pdf html
+
+dvi: ${TARGET}.tex 
+#	run latex twice to get references correct
+	latex ${TARGET}.tex
+#	you can also have a bibtex line here
+#	bibtex $(TARGET).tex
+	latex $(TARGET).tex
+
+ps: dvi
+	dvips -R -Poutline -t letter ${TARGET}.dvi -o ${TARGET}.ps
+
+pdf: ps
+	ps2pdf ${TARGET}.ps
+
+
+html:
+	cp ${TARGET}.tex ${HTML}.tex
+	latex ${HTML}.tex
+	latex2html -split 0 -show_section_numbers -local_icons -no_navigation ${HTML}
+	sed 's/<\/SUP><\/A>/<\/SUP><\/A> /g' < ${HTML}/index.html > ${HTML}/index2.html
+	mv ${HTML}/index2.html ${HTML}/index.html
+	rm ${HTML}.*
+d6 1
+a6 1
+	$(CC) $(CC_OPTIONS) -o $@@ $@@.c
+d8 8
+a15 3
+opt:    sieve.c
+	rm -f sieve
+	make CC_OPTIONS=-O3 sieve
+d17 2
+a18 5
+run: default
+	time sieve 4 
+
+test: sieve
+	time sieve	
+d20 2
+a21 3
+clean:
+	rm -f sieve *.o core a.out sieve.tgz sieve.tbz
+	rm -rf *.dSYM
+d24 1
+a24 1
+	tar cvf - Makefile sieve.c | bzip2 > sieve.tbz
+@
+
+
+1.4
+log
+@time is now test
+@
+text
+@d19 1
+a19 1
+CC=g++
+d50 1
+a50 1
+opt: 
+d52 1
+a52 1
+	make CC_OPTIONS=-O sieve
+d55 1
+a55 1
+	sieve 2
+@
+
+
+1.3
+log
+@added OPT without compiling debugger flags.
+@
+text
+@d51 1
+d57 2
+a58 2
+test: uniqify 
+	-time uniqify test1.txt 2>&1 | grep real
+@
+
+
+1.2
+log
+@changed to rm all dSYM files, and tgz files.
+@
+text
+@a42 1
+
+d50 3
+@
+
+
+1.1
+log
+@Initial revision
+@
+text
+@d21 1
+a21 1
+default: prime 
+d48 1
+a48 1
+prime: prime.c
+d52 1
+a52 1
+	prime 2
+d58 1
+a58 1
+	rm -f prime *.o core a.out prime.tgz
+d62 1
+a62 1
+	tar cvf - Makefile prime.c | bzip2 > uniqify.tbz
+@
