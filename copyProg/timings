@@ -1,0 +1,10 @@
+#!/bin/bash
+
+count=1;
+high=8192;  # 8192
+
+until [ $count -gt $high ] ; do
+	rm -f dest_file
+	( time -p copyprog data_to_read dest_file $count ) 2>&1 | grep real 
+	count=`expr $count '*' 2`
+done
