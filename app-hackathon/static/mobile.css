@@ -1,0 +1,125 @@
+html, body {
+  font-family: Verdana, Helvetica, sans-serif;
+  background-color: #FFF;
+  /*color:#356EC7;*/
+  color:#404040;
+  text-align:left;
+  margin:0;
+  padding:0;
+  height:100%;
+}
+
+#header{
+	width: 100%;
+	height: 25px;
+	/*border-top: 5px solid #999;*/
+    background-color:#404040;
+	position:fixed;
+  	text-align:center;
+	color: white;
+	font-style: italic;
+	font-weight: bold;
+	top: 0;
+}
+#footer {
+	width: 100%;
+	border-top: 5px solid #999;
+	background: #fff;
+	position: fixed;
+	bottom: 0;
+	/*padding: 8px 0 20px 0;
+	z-index: 10000;
+*/
+}
+a {
+	text-decoration: none;
+}
+.pTtl {
+	display: block;
+    background-color:#404040;
+	margin-left: 0px;
+	padding: 3px;
+	color: #fff;
+	font-size: 110%;
+	font-weight: bold;
+	font-style: italic;
+	top: 0;
+}
+#navBtn ul {
+	text-indent: -40px;
+	list-style-type: none;
+}
+#navBtn ul li {
+	display: inline;
+}
+#navBtn ul a {
+	text-decoration: none;
+	padding: 0 5px;
+	color:#FF8800;
+	font-weight: bold;
+}
+#navBtn ul a:hover {
+	background-color:#FF8800;
+	color:#fff;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+}
+.i {
+	display: block;
+	clear: both;
+	padding: 2px;
+	margin: 2px;
+	position: relative;
+	background: -webkit-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#EEE));
+	-webkit-box-shadow: rgba(0, 0, 0, 0.398438) 0px 1px 3px;
+	-webkit-border-radius: 2px;
+	background: -moz-gradient(linear, 0% 0%, 0% 100%, from(#FFF), to(#EEE));
+	-moz-box-shadow: rgba(0, 0, 0, 0.398438) 0px 1px 3px;
+	-moz-border-radius: 2px;
+}
+.iTtl {
+	color: #FF8800;
+	margin: 0 auto;
+	position: relative;
+	font-weight: bold;
+}
+.iDes {
+	color: #404040;
+	margin: 0 3px 3px 3px;
+	font-size: 90%;
+}
+.iLnk {
+	color: #FF8800;
+	margin-left: 3px;
+	font-size: 60%;
+	font-style: italic;
+}
+.ftr {
+	line-height: 100%;
+	font-size: 60%;
+	text-align: center;
+}
+.smTxt {
+	font-size: 60%;
+	line-height: 100%;
+}
+.ctr {
+	text-align: center;
+}
+.imgR {
+	float: right;
+	margin: 3px;
+	clear: both;
+	/*  create shadow behind images  */
+	/*  -webkit-box-shadow: 0 0 15px #000; */
+	/*  -moz-box-shadow: 0 0 15px #000; */
+}
+.imgL {
+	float: left;
+	margin: 3px;
+	clear: both;
+	/*  create shadow behind images  */
+	/*  -webkit-box-shadow: 0 0 15px #000; */
+	/*  -moz-box-shadow: 0 0 15px #000; */
+}
+

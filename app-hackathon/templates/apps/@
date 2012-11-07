@@ -1,0 +1,95 @@
+<!DOCTYPE HTML>
+<html>
+<head>
+	<meta name = "viewport" content="width=320;"/>	
+	<link type="text/css" rel="stylesheet" href="/static/main.css" />
+	<title>App Hackathon</title>
+<script>
+	if ({{ os }} == "Mac OS"){
+		echo'<link type="text/css" rel="stylesheet" href="/static/mobile.css" />'
+	}
+	else{
+		echo'<link type="text/css" rel="stylesheet" href="/static/main.css" />'
+	}
+</script>
+</head>
+<body>
+	<header>
+		<p class=pTtl>
+			<img src="/static/greyback.png" width="35" height="28" />
+			App-Hackathon <a href="{{ login_url }}">{{ login_text }}</a>
+		</p>
+	</header>
+    <hr color="FF8800">     
+	<nav id=navBtn>
+		<ul>
+			<li><a href='index'>Projects</a></li>
+			<li><a href='ideas'>Ideas</a></li>
+			<li><a href='live'>Live</a></li>
+			<li><a href='about'>About</a></li>
+			<li><a href='faq'>FAQ</a></li>
+		</ul>
+	</nav>
+    <hr color="FF8800">     
+
+	<article class="i">
+		<p>OS: {{ os }}</p>
+		<p>Browser: {{ browser }}</p>
+		<p>Agent: {{ agent }}</p>
+	</article>
+
+	<article class="i">
+		<p class="iTtl">Post your idea for an app below!</p>
+		<br/>
+		<p class="iDes">
+			Fill out the form below, but if you want credit you need to login
+			first with your Google account. Click the "Login" button if
+			you're not already signed in (upper right).
+		</p>
+	
+		<article class="i">
+			<form action="ideas" method="post">
+				{% csrf_token %}
+				<div>
+					<p class ="iTtl">
+						<label for="idea-name">Title:</label>
+					</p>
+					<input id="idea-name" type="text" name="name" />
+				</div>
+				<div>
+					<p class ="iTtl">
+						<label for="idea-description">Description:</label>
+					</p>
+					<textarea id="idea-description" name="description"
+							rows="3" cols="45">
+					</textarea>
+				</div>
+				<div><input type="submit" value="Post Idea"></div>
+			</form>
+		</article>
+
+		{% for idea in ideas %}
+		<article class="i">
+			<p class="iTtl">
+				{% if idea.author %}
+				{{ idea.author }}
+				{% else %}
+				An anonymous person
+				{% endif %}
+				wrote:
+			</p>
+			{% if admin %}
+			<form action="{{ idea.id }}/approve/" method="post">
+				{% csrf_token %}
+				<input type="submit" value="Approve" />
+			</form>
+			{% endif %}
+			<p class="iTtl">{{ idea.name }}</p>
+			<p class="iDes">
+				<blockquote>{{ idea.description|escape }}</blockquote>
+			</p>
+		</article>
+		{% endfor %}
+	</article>
+</body>
+</html> 

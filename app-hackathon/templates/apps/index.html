@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta name = "viewport" content="width=320;" />
+	<link type="text/css" rel="stylesheet" href="/static/main.css" />
+	<title>App Hackathon!</title>
+</head>
+<body>
+	<header>
+		<p class="pTtl">
+			<img src="/static/greyback.png" width="35" height="28" />
+			App-Hackathon
+		</p>		
+	</header>
+	<hr color="FF8800">		
+	<nav id="navBtn">
+		<ul>
+			<li><a href='index'>Projects</a></li>
+            <li><a href='ideas'>Ideas</a></li>
+			<li><a href='live'>Live</a></li>
+			<li><a href='about'>About</a></li>
+			<li><a href='faq'>FAQ</a></li>
+		</ul>
+	</nav>
+	<hr color="FF8800">		
+	<article class="i">
+		<p class="iTtl">Accepted Projects:</p>
+		<p></p>
+		<p class="iDes">
+			These are the ideas that have been screened and accepted by the
+			moderators so far. These will update every day, so keep voting!
+		</p>
+		
+		{% for vote in votes %}
+        <article class="i">
+			<p class="iTtl">{{ vote.project.name }}</p>
+			<p class="iDes">{{ vote.project.description }}</p>
+			<form action="/apps/{{ vote.id }}/vote/" method="post">
+				{% csrf_token %}
+				<p>
+					<input type="submit" style="height:40px; width:120px;"
+						value="Vote" />
+				</p>
+			</form>
+			<p>Total:{{ vote.count }}</p> 
+		</article>
+		{% endfor %}
+	</article>
+</body>
+</html> 
