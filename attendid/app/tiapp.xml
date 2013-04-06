@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ti:app xmlns:ti="http://ti.appcelerator.org">
+    <deployment-targets>
+        <target device="mobileweb">false</target>
+        <target device="iphone">true</target>
+        <target device="ipad">false</target>
+        <target device="android">true</target>
+        <target device="blackberry">false</target>
+    </deployment-targets>
+    <sdk-version>2.1.1.GA</sdk-version>
+    <id>com.herrington.attendid</id>
+    <name>Attendid</name>
+    <version>1.0</version>
+    <publisher>Ryley Herrington</publisher>
+    <url>http://ryleyherrington.com/attendid</url>
+    <description>An application to view all the event postings in one place!</description>
+    <copyright>2012 by Ryley Herrington</copyright>
+    <icon>appicon.png</icon>
+    <persistent-wifi>false</persistent-wifi>
+    <prerendered-icon>false</prerendered-icon>
+    <statusbar-style>default</statusbar-style>
+    <statusbar-hidden>false</statusbar-hidden>
+    <fullscreen>false</fullscreen>
+    <navbar-hidden>false</navbar-hidden>
+    <analytics>false</analytics>
+    <guid>323c49ad2d1344d687e948931ddfd945</guid>
+    <ios>
+        <min-ios-ver>4.3</min-ios-ver>
+        <plist>
+            <dict>
+                <key>UISupportedInterfaceOrientations</key>
+                <array>
+                    <string>UIInterfaceOrientationPortrait</string>
+                </array>
+            </dict>
+        </plist>
+    </ios>
+    <android xmlns:android="http://schemas.android.com/apk/res/android">
+        <manifest>
+            <supports-screens android:anyDensity="false"/>
+        </manifest>
+    </android>
+    <modules>
+        <module platform="android" version="1.0">ti.draggable</module>
+    </modules>
+</ti:app>
